@@ -24,7 +24,7 @@ La autenticación se realiza mediante tokens utilizando Laravel Sanctum.
 
 ```bash
 git clone <url-del-repositorio>
-cd RDS
+cd proyecto-RDS
 ```
 
 ### Instalar dependencias
