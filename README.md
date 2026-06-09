@@ -8,7 +8,7 @@ La autenticación se realiza mediante tokens utilizando Laravel Sanctum.
 
 ---
 
-## Requisitos
+## Requerimientos
 
 * PHP 8.4 o superior
 * Composer
