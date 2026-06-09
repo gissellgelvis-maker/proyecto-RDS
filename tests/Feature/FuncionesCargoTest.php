@@ -4,17 +4,33 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\User;
 
 class FuncionesCargoTest extends TestCase
 {
     use RefreshDatabase;
+
+    private $headers;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $user = User::factory()->create();
+        $token = $user->createToken('test-token')->plainTextToken;
+
+        $this->headers = [
+            'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/json',
+        ];
+    }
 
     private function crearCargo()
     {
         $response = $this->postJson('/api/cargos', [
             'nombre_cargo' => 'Gerente',
             'descripcion' => 'Cargo de gerencia'
-        ]);
+        ], $this->headers);
         return $response->json('id_cargo');
     }
 
@@ -26,14 +42,14 @@ class FuncionesCargoTest extends TestCase
             'descripcion_funcion' => 'Supervisar personal',
             'estado' => 'activo',
             'id_cargo' => $id_cargo
-        ]);
+        ], $this->headers);
 
         $response->assertStatus(201);
     }
 
     public function test_listar_funciones()
     {
-        $response = $this->getJson('/api/funciones-cargo');
+        $response = $this->getJson('/api/funciones-cargo', $this->headers);
         $response->assertStatus(200);
     }
 
@@ -45,10 +61,10 @@ class FuncionesCargoTest extends TestCase
             'descripcion_funcion' => 'Supervisar personal',
             'estado' => 'activo',
             'id_cargo' => $id_cargo
-        ]);
+        ], $this->headers);
 
         $id = $funcion->json('id_funcion');
-        $response = $this->getJson('/api/funciones-cargo/' . $id);
+        $response = $this->getJson('/api/funciones-cargo/' . $id, $this->headers);
         $response->assertStatus(200);
     }
 
@@ -60,7 +76,7 @@ class FuncionesCargoTest extends TestCase
             'descripcion_funcion' => 'Supervisar personal',
             'estado' => 'activo',
             'id_cargo' => $id_cargo
-        ]);
+        ], $this->headers);
 
         $id = $funcion->json('id_funcion');
 
@@ -68,7 +84,7 @@ class FuncionesCargoTest extends TestCase
             'descripcion_funcion' => 'Coordinar reuniones',
             'estado' => 'inactivo',
             'id_cargo' => $id_cargo
-        ]);
+        ], $this->headers);
 
         $response->assertStatus(200);
     }
@@ -81,11 +97,11 @@ class FuncionesCargoTest extends TestCase
             'descripcion_funcion' => 'Supervisar personal',
             'estado' => 'activo',
             'id_cargo' => $id_cargo
-        ]);
+        ], $this->headers);
 
         $id = $funcion->json('id_funcion');
 
-        $response = $this->deleteJson('/api/funciones-cargo/' . $id);
+        $response = $this->deleteJson('/api/funciones-cargo/' . $id, $this->headers);
         $response->assertStatus(200);
     }
 }

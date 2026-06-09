@@ -20,7 +20,13 @@ class CargoController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'nombre_cargo' => 'required|string|max:100',
+            'descripcion' => 'required|string|max:255'
+        ]);
+
         $cargo = Cargo::create($request->all());
+
         return response()->json($cargo, 201);
     }
 
@@ -41,11 +47,19 @@ class CargoController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'nombre_cargo' => 'sometimes|string|max:100',
+            'descripcion' => 'sometimes|string|max:255'
+        ]);
+
         $cargo = Cargo::find($id);
+        
         if (!$cargo) {
             return response()->json(['message' => 'Cargo no encontrado'], 404);
         }
+
         $cargo->update($request->all());
+
         return response()->json($cargo);
     }
 

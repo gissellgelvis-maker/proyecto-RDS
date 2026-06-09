@@ -2,20 +2,35 @@
 
 namespace Tests\Feature;
 
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\User;
 
 class EmpleadoTest extends TestCase
 {
     use RefreshDatabase;
+
+    private $headers;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $user = User::factory()->create();
+        $token = $user->createToken('test-token')->plainTextToken;
+
+        $this->headers = [
+            'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/json',
+        ];
+    }
 
     private function crearCargo()
     {
         $response = $this->postJson('/api/cargos', [
             'nombre_cargo' => 'Gerente',
             'descripcion' => 'Cargo de gerencia'
-        ]);
+        ], $this->headers);
         return $response->json('id_cargo');
     }
 
@@ -31,14 +46,14 @@ class EmpleadoTest extends TestCase
             'salario' => 25000.00,
             'estado' => 'activo',
             'id_cargo' => $id_cargo
-        ]);
+        ], $this->headers);
 
         $response->assertStatus(201);
     }
 
     public function test_listar_empleados()
     {
-        $response = $this->getJson('/api/empleados');
+        $response = $this->getJson('/api/empleados', $this->headers);
         $response->assertStatus(200);
     }
 
@@ -54,10 +69,10 @@ class EmpleadoTest extends TestCase
             'salario' => 25000.00,
             'estado' => 'activo',
             'id_cargo' => $id_cargo
-        ]);
+        ], $this->headers);
 
         $id = $empleado->json('id_empleado');
-        $response = $this->getJson('/api/empleados/' . $id);
+        $response = $this->getJson('/api/empleados/' . $id, $this->headers);
         $response->assertStatus(200);
     }
 
@@ -73,7 +88,7 @@ class EmpleadoTest extends TestCase
             'salario' => 25000.00,
             'estado' => 'activo',
             'id_cargo' => $id_cargo
-        ]);
+        ], $this->headers);
 
         $id = $empleado->json('id_empleado');
         $response = $this->putJson('/api/empleados/' . $id, [
@@ -84,7 +99,7 @@ class EmpleadoTest extends TestCase
             'salario' => 30000.00,
             'estado' => 'activo',
             'id_cargo' => $id_cargo
-        ]);
+        ], $this->headers);
 
         $response->assertStatus(200);
     }
@@ -101,10 +116,10 @@ class EmpleadoTest extends TestCase
             'salario' => 30000.00,
             'estado' => 'activo',
             'id_cargo' => $id_cargo
-        ]);
+        ], $this->headers);
 
         $id = $empleado->json('id_empleado');
-        $response = $this->deleteJson('/api/empleados/' . $id);
+        $response = $this->deleteJson('/api/empleados/' . $id, $this->headers);
         $response->assertStatus(200);
     }
 }

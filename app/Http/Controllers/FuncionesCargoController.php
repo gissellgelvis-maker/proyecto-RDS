@@ -20,7 +20,14 @@ class FuncionesCargoController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'descripcion_funcion' => 'required|string|max:255',
+            'estado' => 'required|in:activo,inactivo',
+            'id_cargo' => 'required|integer|exists:cargos,id_cargo'
+        ]);
+
         $funcion = FuncionesCargo::create($request->all());
+
         return response()->json($funcion, 201);
     }
 
@@ -41,7 +48,14 @@ class FuncionesCargoController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'descripcion_funcion' => 'sometimes|string|max:255',
+            'estado' => 'sometimes|in:activo,inactivo',
+            'id_cargo' => 'sometimes|integer|exists:cargos,id_cargo'
+        ]);
+
         $funcion = FuncionesCargo::find($id);
+        
         if (!$funcion) {
             return response()->json(['message' => 'Función no encontrada'], 404);
         }
