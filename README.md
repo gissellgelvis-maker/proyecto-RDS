@@ -6,7 +6,7 @@ Esta API permite gestionar empleados, cargos y funciones de cargo mediante opera
 
 La autenticación se realiza mediante tokens utilizando Laravel Sanctum.
 
----
+----------------------------
 
 ## Requerimientos
 
@@ -16,7 +16,7 @@ La autenticación se realiza mediante tokens utilizando Laravel Sanctum.
 * Laravel 12
 * Laravel Sanctum
 
----
+----------------------------
 
 ## Instalación
 
@@ -78,218 +78,69 @@ http://127.0.0.1:8000
 
 ---
 
-# Autenticación
+### Pruebas de la API con cURL
 
-## Login
+# 1. Iniciar sesión
 
-### Endpoint
+1.Login(obtener token)
 
-```http
-POST /api/login
-```
+curl -X POST http://127.0.0.1:8000/api/login \
+-H "Content-Type: application/json" \
+-d "{\"email\":\"admin@gmail.com\",\"password\":\"12345678\"}"
 
-### Body
+# Le devolvera algo como 
 
-```json
 {
-    "email": "admin@gmail.com",
-    "password": "12345678"
+    "message":"Login exitoso",
+    "token":"5|FycLz8pu4crkY3UpyQ755rjcAu5uVqIqH8qMt6Kj0354edeb",
+    "user":{
+        "id":1,
+        "name":"admin",
+        "email":"admin@gmail.com",
+        "email_verified_at":null,
+        "created_at":"2026-06-08T17:45:43.000000Z",
+        "updated_at":"2026-06-08T17:45:43.000000Z"
+        }
 }
-```
 
-### Respuesta
+### 2. Listar empleados
 
-```json
-{
-    "message": "Login exitoso",
-    "token": "TOKEN_GENERADO",
-    "user": {
-        "id": 1,
-        "name": "admin",
-        "email": "admin@gmail.com"
-    }
-}
-```
+# Reemplaza TU_TOKEN por el token obtenido:
 
----
+curl -X GET http://127.0.0.1:8000/api/empleados \
+-H "Accept: application/json" \
+-H "Authorization: Bearer TU_TOKEN"
 
-# Autorización
+### 3. Buscar un empleado
 
-Las rutas protegidas requieren el siguiente encabezado:
+curl -X GET http://127.0.0.1:8000/api/empleados/6 \
+-H "Accept: application/json" \
+-H "Authorization: Bearer TU_TOKEN"
 
-```http
-Authorization: Bearer TOKEN_GENERADO
-Accept: application/json
-```
+### 4 Crear empleado
 
----
+curl -X POST http://127.0.0.1:8000/api/empleados \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer TU_TOKEN" \
+-d "{\"nombres\":\"Lusia\",\"apellidos\":\"Perez\",\"fecha_nacimiento\":\"2000-01-15\",\"fecha_ingreso\":\"2024-01-10\",\"salario\":2500,\"estado\":\"activo\",\"id_cargo\":1}"
 
-# CRUD Empleados
+### 5 Actualizar empleado
 
-## Listar empleados
+curl -X PUT http://127.0.0.1:8000/api/empleados/1 \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer TU_TOKEN" \
+-d "{\"salario\":3000}"
 
-### Endpoint
+### 6 Eliminar empleado
 
-```http
-GET /api/empleados
-```
+curl -X DELETE http://127.0.0.1:8000/api/empleados/1 \
+-H "Authorization: Bearer TU_TOKEN"
 
-### Respuesta
+###  7 Cerrar sesion
 
-```json
-[
-    {
-        "id_empleado": 1,
-        "nombres": "Juan",
-        "apellidos": "Perez"
-    }
-]
-```
+curl -X POST http://127.0.0.1:8000/api/logout -H "Accept: application/json" -H "Authorization: Bearer TOKEN_GENERADO"
 
----
 
-## Obtener empleado por ID
-
-### Endpoint
-
-```http
-GET /api/empleados/{id}
-```
-
-Ejemplo:
-
-```http
-GET /api/empleados/1
-```
-
----
-
-## Crear empleado
-
-### Endpoint
-
-```http
-POST /api/empleados
-```
-
-### Body
-
-```json
-{
-    "nombres": "Sebastian",
-    "apellidos": "Cant",
-    "fecha_nacimiento": "2000-05-10",
-    "fecha_ingreso": "2024-01-15",
-    "salario": 2500,
-    "estado": "activo",
-    "id_cargo": 21
-}
-```
-
----
-
-## Actualizar empleado
-
-### Endpoint
-
-```http
-PUT /api/empleados/{id}
-```
-
-### Body
-
-```json
-{
-    "nombres": "Juan Carlos",
-    "salario": 3000
-}
-```
-
----
-
-## Eliminar empleado
-
-### Endpoint
-
-```http
-DELETE /api/empleados/{id}
-```
-
-Ejemplo:
-
-```http
-DELETE /api/empleados/1
-```
-
----
-
-# CRUD Cargos
-
-## Listar cargos
-
-```http
-GET /api/cargos
-```
-
-## Obtener cargo
-
-```http
-GET /api/cargos/{id}
-```
-
-## Crear cargo
-
-```http
-POST /api/cargos
-```
-
-## Actualizar cargo
-
-```http
-PUT /api/cargos/{id}
-```
-
-## Eliminar cargo
-
-```http
-DELETE /api/cargos/{id}
-```
-
----
-
-# CRUD Funciones Cargo
-
-## Listar funciones
-
-```http
-GET /api/funciones-cargo
-```
-
-## Obtener función
-
-```http
-GET /api/funciones-cargo/{id}
-```
-
-## Crear función
-
-```http
-POST /api/funciones-cargo
-```
-
-## Actualizar función
-
-```http
-PUT /api/funciones-cargo/{id}
-```
-
-## Eliminar función
-
-```http
-DELETE /api/funciones-cargo/{id}
-```
-
----
 
 # Pruebas
 
